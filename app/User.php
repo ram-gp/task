@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password','token'
     ];
 
     /**
@@ -24,15 +24,15 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token','api_token'
+        'password', 'remember_token','token'
     ];
 
     /**
      * Get all the tasks corresponds to the users
      **/
-     public function taskmanagment()
+     public function Taskmanagement()
      {
-        return $this->belongsToMany(\App\Taskmanagement::class,'map_user_task');
+        return $this->belongsToMany(\App\Taskmanagement::class,'map_task_user');
     
      }
 }

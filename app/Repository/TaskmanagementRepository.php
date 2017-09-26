@@ -43,7 +43,7 @@ class TaskmanagementRepository
 	 **/
 	 public function getAlltasks()
 	 {
-           $taskmanagement = Taskmanagement::whereHas('user')->get();
+           $taskmanagement = Taskmanagement::whereHas('user')->with('user')->get();
             
 			return $taskmanagement; 
 	 }

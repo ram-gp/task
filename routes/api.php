@@ -13,12 +13,16 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+/*Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+});*/
+Route::group(['middleware' => 'jwt.auth'], function () {
+    Route::get('user', 'UserController@getAuthUser');
 });
-
-
-Route::group(['middleware' => 'auth:api'], function () {
+Route::group(array('prefix' => 'api'), function() {
+    Route::resource('restful-apis','APIController');
+});
+Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/api/tasks', 'APIController@index');
     Route::get('/api/books/{id}', 'APIController@show');
     Route::post('/api/books', 'APIController@store');
