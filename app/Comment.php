@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Comment extends Model
 {
     //
-    public function taskmanagement()
+    public function task()
     {
-        return $this->belongsTo(\App\Taskmangement::Class);
+        return $this->belongsTo(\App\Task::Class);
     }
 
 }

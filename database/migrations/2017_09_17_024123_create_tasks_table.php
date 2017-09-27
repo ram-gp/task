@@ -20,7 +20,10 @@ class CreateTasksTable extends Migration
             $table->enum('task_type',['bug','feature','enhancement']);
             $table->enum('task_status',['new','in_progress','closed']);
             $table->timestamps();
+            $table->integer('created_by')->unsigned();
+            $table->integer('updated_by')->unsigned();
             });
+                 
         Schema::create('map_task_user', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('task_id');

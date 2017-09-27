@@ -19,7 +19,11 @@ class CreateCommentsTable extends Migration
             $table->integer('task_id');
             $table->datetime('remainder_date');
             $table->timestamps();
+            $table->integer('created_by')->unsigned();
+            $table->integer('updated_by')->unsigned();
+
         });
+                 
     }
 
     /**

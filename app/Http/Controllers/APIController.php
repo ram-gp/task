@@ -29,10 +29,10 @@ class APIController extends Controller
     }
     public function index(Request $request)
     {
-        $task = $this->task->getAlltasks();
+        $user = $this->user->getAllusers();
         return response(array(
                 'error' => false,
-                'message' =>response()->json($task),
+                'message' =>response()->json($user),
                ),200);
     }
 

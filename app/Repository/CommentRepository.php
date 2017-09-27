@@ -20,7 +20,7 @@ class CommentRepository
 			$comment = Comment::findOrFail($id);
 			  
 			$comment->comments=$comment_array['comments'];
-			$comment->taskmanagement_d=$comment_array['taskmanagement_id'];
+			$comment->task_id=$comment_array['task_id'];
 			$comment->remainder_date=''; //need to generate some future date
     		 $comment->save(); 			 
 		  }
@@ -29,7 +29,7 @@ class CommentRepository
 			$comment = new Comment();  
 			  
 			$comment->comments=$comment_array['comments'];
-			$comment->taskmanagement_d=$comment_array['taskmanagement_id'];
+			$comment->task_id=$comment_array['task_id'];
 			$comment->remainder_date=''; //need to generate some future date
     		 $comment->save(); 		
 		  }
