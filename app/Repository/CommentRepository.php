@@ -43,7 +43,7 @@ class CommentRepository
 	 public function getAllcomments($task_id)
 	 {
 		    
-           $comment = Comment::with('taskmanagement')->orderBy('created_at','desc');
+           $comment = Comment::with('task')->orderBy('created_at','desc');
             
 			return $comment; 
 	 }

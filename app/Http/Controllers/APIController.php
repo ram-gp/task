@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Taskmanagement;
+use App\task;
 use App\User;
 
 use App\Repository\UserRepository;
-use App\Repository\TaskmanagementRepository;
+use App\Repository\TaskRepository;
 use App\Repository\CommentRepository;
 
 class APIController extends Controller
@@ -18,21 +18,21 @@ class APIController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    protected  $user,$taskmanagement,$comment;
+    protected  $user,$task,$comment;
 
-    public function __construct(UserRepository $user,TaskmanagementRepository $taskmanagement,CommentRepository $comment)
+    public function __construct(UserRepository $user,TaskRepository $task,CommentRepository $comment)
     {
-        $this->middleware('auth');
+        //$this->middleware('auth');
         $this->user = $user;
-        $this->taskmanagement = $taskmanagement;
+        $this->task = $task;
         $this->comment = $comment;
     }
     public function index(Request $request)
     {
-        $taskmanagement = $this->taskmanagement->getAlltasks();
+        $task = $this->task->getAlltasks();
         return response(array(
                 'error' => false,
-                'message' =>response()->json($taskmanagement),
+                'message' =>response()->json($task),
                ),200);
     }
 
@@ -56,7 +56,7 @@ class APIController extends Controller
     public function store(Request $request)
     {
         //
-                $taskmanagement = $this->taskmanagement->createTask($request->task_array);
+                $task = $this->task->createTask($request->task_array);
         return response(array(
                 'error' => false,
                 'message' =>'Task created successfully',
@@ -95,7 +95,7 @@ class APIController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $taskmanagement = $this->taskmanagement->createTask($request->task_array,$id);
+        $task = $this->task->createTask($request->task_array,$id);
         return response(array(
                 'error' => false,
                 'message' =>'Task updated successfully',

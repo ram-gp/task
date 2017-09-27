@@ -30,9 +30,9 @@ class User extends Authenticatable
     /**
      * Get all the tasks corresponds to the users
      **/
-     public function Taskmanagement()
+     public function Task()
      {
-        return $this->belongsToMany(\App\Taskmanagement::class,'map_task_user');
+        return $this->belongsToMany(\App\Task::class,'map_task_user');
     
      }
 }

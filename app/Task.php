@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Taskmanagement extends Model
+class Task extends Model
 {
     //
     public function user(){
