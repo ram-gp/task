@@ -93,7 +93,7 @@ class UserRepository
 			return array(
                 'error' => false,
                 'message' =>$user,
-               );; 
+               );
 	 }	
 
 	 /**

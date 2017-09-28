@@ -12,7 +12,12 @@ class Task extends Model
     }
     public function comment()
     {
-        return $this->hasMany(\App\Comment::class);
+        return $this->hasMany(\App\Comment::class,'task_id');
     }
-
+    public function created_by(){
+            return $this->belongsTo(\App\User::class,'created_by','id');   
+    }
+    public function updated_by(){
+            return $this->belongsTo(\App\User::class,'updated_by','id');   
+    }    
 }

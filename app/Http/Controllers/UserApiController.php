@@ -3,9 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\task;
-use App\User;
-use App\Comment;
 use App\Exceptions\Handler;
 use App\Repository\UserRepository;
 use App\Repository\TaskRepository;
@@ -21,7 +18,6 @@ class UserApiController extends Controller
 
     public function __construct(UserRepository $user,TaskRepository $task,CommentRepository $comment)
     {
-        //$this->middleware('auth');
         $this->user = $user;
         $this->task = $task;
         $this->comment = $comment;

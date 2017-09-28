@@ -14,28 +14,19 @@ class TaskRepository
 	  **/
 	  public function createTask($task_array = array(),$id=null)
 	  {
-		   if( $id != null )
-		  {
+	  	  $user =\JWTAuth::toUser($task_array['token']);
+		  if( $id != null )
 			  $task = Task::findOrFail($id);
-			  
-			  $task->task_type=$task_array['task_type'];
-			$task->task_desc=$task_array['task_desc'];
-			$task->task_status=$task_array['task_status'];
-			$task->user()->user_id=$task_array['user']['user_id'];
-			 $task->save(); 			 
-		  }
 		  else
-		  {
-			  $task = new Task();
-			  
-			  $task->task_type=$task_array['task_type'];
+			$task = new Task;
+		  
+		  	$task->task_type=$task_array['task_type'];
 			$task->task_desc=$task_array['task_desc'];
 			$task->task_status=$task_array['task_status'];
-			$task->user()->user_id=$task_array['user']['user_id'];
-			 $task->save(); 	
-		  }
-		  
-		 return $user;
+			$task->created_by=$user->id;
+			$task->updated_by=$user->id;
+			$task->save(); 
+		 return $task;
 	  }
 	
 	/**
@@ -43,18 +34,59 @@ class TaskRepository
 	 **/
 	 public function getAlltasks()
 	 {
-           $task = Task::whereHas('user')->with('user')->get();
-            
+           $task = Task::with('comment')->orderBy('created_at','desc');
+           $task =  $task->get();
+           if ($task == null){
+		    	return array(
+                'error' => true,
+                'message' =>'Task not available ...',
+               );
+		    }
+		    return array(
+                'error' => false,
+                'message' =>$task,
+               );
 			return $task; 
 	 }
-	 
+	/**
+	 * Get my tasks
+	 **/
+	 public function getMytasks($id = 'null')
+	 {
+	 	   $user =\JWTAuth::toUser($task_array['token']);
+           $task = Task::with('comment')->where('id',$user->id)->orderBy('created_at','desc');
+
+           $task =  $task->get();
+           if ($task == null){
+		    	return array(
+                'error' => true,
+                'message' =>'Task not available ...',
+               );
+		    }
+		    return array(
+                'error' => false,
+                'message' =>$task,
+               );
+			return $task; 
+	 }	 
 	 /**
 	 * Get task by id
 	 **/
 	 public function getById($id)
 	 {
-		    $task = Task::find($id);
-			return $task; 
+			$task = Task::with('comment','created_by','updated_by')->where('id',$id)->get();
+
+		    if ($task == null){
+		    	return array(
+                'error' => true,
+                'message' =>'Task not Available ...',
+               );
+		    	}
+
+			return array(
+                'error' => false,
+                'message' =>$task,
+               );
 	 }	
    
 	
