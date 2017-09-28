@@ -15,13 +15,8 @@ use Illuminate\Http\Request;
 
 /*Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
-});*/
-Route::group(['middleware' => 'jwt.auth'], function () {
-    Route::get('user', 'UserController@getAuthUser');
 });
-Route::group(array('prefix' => 'api'), function() {
-    Route::resource('restful-apis','APIController');
-});
+
 Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/api/user', 'UserAPIController@index');
     Route::get('/api/user/{id}', 'UserAPIController@show');
@@ -41,6 +36,5 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::put('/api/comment/{id}', 'CommentAPIController@update');
     Route::delete('/api/comment/{id}', 'CommentAPIController@destroy');    
 });
-Route::group(['middleware' => 'jwt.auth'], function () {
-    
-});
+
+*/

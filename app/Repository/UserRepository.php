@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use Auth;
-use App\User;
+use \App\User;
+use JWTAuth;
 
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class UserRepository
 {
@@ -29,29 +31,29 @@ class UserRepository
 	  **/
 	  public function createUser($user_array = array(),$id=null)
 	  {
-		   if( $id != null )
-		  {
+
+	  		$result = $this->checkEmail($user_array['email'],$id);
+	  		if ($result->count() > 0){
+				return array(
+                'error' => true,
+                'message' =>'Email Already Exist...',
+               );
+	  		}
+		  if( $id != null )		  
 			  $user = User::findOrFail($id);
-			  $user->name = $user_array['name'];
+   	      else	
+		      $user = new \App\User;
+
+		  	  $user->name = $user_array['name'];
 			  $user->email = $user_array['email'];
-			 /*  if(isset($user_array['password']))
-			  {
-				 $user->password =  bcrypt($user_array['password']); 
-			  } */
-			  $user->isActive = $user_array['isActve'];
+			  $user->password = \Hash::make($user_array['password']);
 			  $user->save(); 			 
-		  }
-		  else
-		  {
-			  $user = new User;
-			  $user->name = $user_array['name'];
-			  $user->email = $user_array['email'];
-			 // $user->password =  bcrypt($user_array['password']);
-			  $user->isActive = $user_array['isActve'];
-			  $user->save(); 
-		  }
-		  
-		 return $user;
+			  $user->token = \JWTAuth::fromUser($user);
+			  $user->save();
+		 return array(
+                'error' => false,
+                'message' =>$user,
+               );;
 	  }
 	
 	/**
@@ -60,21 +62,19 @@ class UserRepository
 	 public function getAllUsers()
 	 {
 		    
-           
-            $curUserRole = Auth::user()->roles()->get()[0]->id;
-            if($curUserRole == '4')
-            {
-               $users = User::with('roles')->orderBy('created_at','desc');
-            }
-		    else
-		    {
-               $users = User::with('roles')->whereHas('roles', function($q) {
-                                                                    
-                                                                    $q->where('role.id','!=','4');
-                                                                }
-                                                      )->orderBy('created_at','desc');
+           $users = User::orderBy('created_at','desc');
+           $users =  $users->get();
+           if ($users == null){
+		    	return array(
+                'error' => true,
+                'message' =>'User not available ...',
+               );
 		    }
-			return $users; 
+		    return array(
+                'error' => false,
+                'message' =>$users,
+               );
+ 
 	 }
 	 
 	 /**
@@ -83,9 +83,31 @@ class UserRepository
 	 public function getById($id)
 	 {
 		    $user = User::find($id);
-			return $user; 
+		    if ($user == null){
+		    	return array(
+                'error' => true,
+                'message' =>'User not Available ...',
+               );
+		    	}
+
+			return array(
+                'error' => false,
+                'message' =>$user,
+               );; 
 	 }	
-   
+
+	 /**
+	 * Get user by email
+	 **/
+	 public function checkEmail($email,$id=null)
+	 {
+		    $user = User::where('email',$email);
+		    if ($id != null)
+		    	$user = $user->where('id','!=',$id);
+
+			return $user; 
+	 }		 
+      
 	
 	/**
 	 * Get the count of the user(s)
@@ -99,7 +121,7 @@ class UserRepository
     /**
      * Get user by email
      **/
-    public function getByEmail($email)
+    public function getUserIdByEmail($email)
     {
     	$user = User::where('email','=',$email)->where('id','=',$this->userId);
     	return $user;
@@ -108,17 +130,9 @@ class UserRepository
     /**
      * Get user by email
      **/
-    public function getUserIdByEmail($email)
+    public function getByEmail($email)
     {
     	$user = User::where('email','=',$email);
     	return $user;
     }
-    /**
-     * Get users from group
-     **/
-    public function getGroupUsers()
-    {
-    	$users = User::whereHas('group')->OrderBy("name","DESC")->paginate(100);
-    	return $users;
-    }    
 }
