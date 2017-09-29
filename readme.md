@@ -1,6 +1,7 @@
 # API Operations
 
 The following API operations are available:
+
 | Operation        | Description            |
 | ------------- |:-------------:|
 |User & Account      | Create, update, list  |
