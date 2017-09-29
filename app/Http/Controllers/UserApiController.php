@@ -63,7 +63,7 @@ class UserApiController extends Controller
     {
         try{
             $response = $this->user->createUser($request->toArray());
-            $statusCode = 200;
+            $statusCode = 201;
             if ($response['error'] == true){
                 throw new \Exception($response['message']);
 
@@ -126,14 +126,23 @@ class UserApiController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
-        $user = $this->user->createUser($request->toArray(),$id);
-        
-        $response = response()->json($user);
-        return response(array(
-                'error' => false,
-                'message' =>$response,
-               ),200);
+        try{
+            $response = $this->user->createUser($request->toArray(),$id);
+            $statusCode = 201;
+            if ($response['error'] == true){
+                throw new \Exception($response['message']);
+
+            }
+
+        }catch(\Exception $e){
+            $response = [
+                "error" => $e->getMessage()
+            ];
+            $statusCode = 404;
+        }finally{
+             return response($response,$statusCode);
+
+        }
     
     }
 

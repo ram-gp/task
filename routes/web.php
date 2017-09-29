@@ -34,6 +34,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::delete('/api/books/{id}', 'APIController@destroy');
 });*/
 Route::group(['middleware' => 'jwt.auth'], function () {
+    Route::get('/api/search/', 'APIController@search');
+
     Route::get('/api/user', 'UserAPIController@index');
     Route::get('/api/user/{id}', 'UserAPIController@show');
     Route::post('/api/user', 'UserAPIController@store');
@@ -42,7 +44,6 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
     Route::get('/api/task', 'TaskAPIController@index');
     Route::get('/api/task/{id}', 'TaskAPIController@show');
-    Route::get('/api/mytask', 'TaskAPIController@getMytasks');
     Route::post('/api/task', 'TaskAPIController@store');
     Route::put('/api/task/{id}', 'TaskAPIController@update');
     Route::delete('/api/task/{id}', 'TaskAPIController@destroy');

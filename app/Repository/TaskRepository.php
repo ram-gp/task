@@ -51,10 +51,10 @@ class TaskRepository
 	/**
 	 * Get my tasks
 	 **/
-	 public function getMytasks($id = 'null')
+	 public function getMytasks($token)
 	 {
-	 	   $user =\JWTAuth::toUser($task_array['token']);
-           $task = Task::with('comment')->where('id',$user->id)->orderBy('created_at','desc');
+	 	   $user =\JWTAuth::toUser($token);
+           $task = Task::with('comment')->where('created_by',$user->id)->orderBy('created_at','desc');
 
            $task =  $task->get();
            if ($task == null){
@@ -98,5 +98,39 @@ class TaskRepository
 		$count = Task::count();
 		return $count;
 	}
- 
+ 	/**
+	 * Get the Filter of the task(s)
+	 **/
+	public function filterTasks($filterData,$token=''){
+		$task = Task::with('comment','created_by','updated_by');
+		if (!empty($filterData['q']))
+			$task = $task->where('task_desc', 'LIKE', '%'.$filterData['q'].'%');
+		if (isset($filterData['task_type']))
+			$task = $task->where('task_type',$filterData['task_type']);
+		if (isset($filterData['task_id']))
+			$task = $task->where('id',$filterData['task_id']);
+		if (isset($filterData['created_by'])){
+			if ($filterData['created_by'] == 'own'){
+				$user =\JWTAuth::toUser($token);
+				$task = $task->where('created_by',$user->id);
+			}else
+				$task = $task->where('created_by',$filterData['created_by']);
+		}
+		if (!isset($filterData['offset']))
+				$filterData['offset'] = 0;	
+		if (isset($filterData['limit'])){
+			$task = $task->offset($filterData['offset'])->limit($filterData['limit']);
+		}	
+		    if ($task == null){
+		    	return array(
+                'error' => true,
+                'message' =>'Task not Available ...',
+               );
+		    	}
+
+			return array(
+                'error' => false,
+                'message' =>$task->get(),
+               );
+	}
 }

@@ -65,7 +65,7 @@ class TaskApiController extends Controller
         //echo $request->token;die;
         try{
             $response = $this->task->createTask($request->toArray());
-            $statusCode = 200;
+            $statusCode = 201;
             if ($response['error'] == true){
                 throw new \Exception($response['message']);
 
@@ -112,12 +112,11 @@ class TaskApiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function mytask()
+    public function search(Request $request)
     {
-        echo $request->token;die;
         try{
-            $response = $this->task->getMytasks();
-            $statusCode = 200;
+            $response = $this->task->getMytasks($request->token);
+            $statusCode = 201;
             if ($response['error'] == true){
                 throw new \Exception($response['message']);
             }            
@@ -151,13 +150,23 @@ class TaskApiController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $task = $this->task->createTask($request->toArray(),$id);
-        
-        $response = response()->json($task);
-        return response(array(
-                'error' => false,
-                'message' =>$response,
-               ),200);
+        try{
+            $response = $this->task->createTask($request->toArray(),$id);
+            $statusCode = 201;
+            if ($response['error'] == true){
+                throw new \Exception($response['message']);
+
+            }
+
+        }catch(\Exception $e){
+            $response = [
+                "error" => $e->getMessage()
+            ];
+            $statusCode = 404;
+        }finally{
+             return response($response,$statusCode);
+
+        } 
     }
 
     /**

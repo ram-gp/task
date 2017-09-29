@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\task;
-use App\User;
-
+use App\Exceptions\Handler;
 use App\Repository\UserRepository;
 use App\Repository\TaskRepository;
 use App\Repository\CommentRepository;
@@ -19,97 +17,55 @@ class APIController extends Controller
      * @return \Illuminate\Http\Response
      */
     protected  $user,$task,$comment;
-
+    protected $availableFilters = [ 
+                                     'task_type', //defaut any
+                                     'task_status' , //default any
+                                     'q', //=> elastic query search term to task and comment desc
+                                     'search_type', // => default task and can search task or comment or both..
+                                     'created_by', // => default all  or own or specific  
+                                     'task_id',
+                                     'offset',
+                                     'limit'
+                                  ];
     public function __construct(UserRepository $user,TaskRepository $task,CommentRepository $comment)
     {
-        //$this->middleware('auth');
+
         $this->user = $user;
         $this->task = $task;
         $this->comment = $comment;
     }
-    public function index(Request $request)
+    public function search(Request $request)
     {
-        $user = $this->user->getAllusers();
-        return response(array(
-                'error' => false,
-                'message' =>response()->json($user),
-               ),200);
+    
+        try{
+            $input = $request->all();
+            $response = $this->filterTasks($input);
+            $statusCode = 201;
+            if ($response['error'] == true){
+                throw new \Exception($response['message']);
+            }            
+        }catch(\Exception $e){
+            $response = [
+                "error" => $e->getMessage()
+            ];
+            $statusCode = 404;
+        }finally{
+             return response($response,$statusCode);
+
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request)
-    {
-        //
 
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-                $task = $this->task->createTask($request->task_array);
-        return response(array(
-                'error' => false,
-                'message' =>'Task created successfully',
-               ),200);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Request $request, $id)
-    {
-
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-        $task = $this->task->createTask($request->task_array,$id);
-        return response(array(
-                'error' => false,
-                'message' =>'Task updated successfully',
-               ),200);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+  /*** Filter tasks with the given filter options ***/
+  public function filterTasks($inputData)
+  {
+     // $inputData = $request->all();
+      $filters = array_intersect($this->availableFilters,array_keys($inputData));
+      $filterOptions = [];
+      foreach($filters as $filter)
+      {
+         $filterOptions[$filter] = $inputData[$filter];
+      }
+      return $filterdList = $this->task->filterTasks($filterOptions,$inputData['token']);
+  }
 }
