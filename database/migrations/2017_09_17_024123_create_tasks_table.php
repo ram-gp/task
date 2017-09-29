@@ -24,7 +24,7 @@ class CreateTasksTable extends Migration
             $table->integer('updated_by')->unsigned();
             });
                  
-        Schema::create('map_task_user', function (Blueprint $table) {
+        /*Schema::create('map_task_user', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('task_id');
             $table->integer('user_id');
@@ -32,7 +32,8 @@ class CreateTasksTable extends Migration
             $table->enum('task_status',['new','in_progress','closed']);
             $table->timestamps();
             });
-        }
+        } Task creation has many relation . so commented
+        */
 
 
     /**
