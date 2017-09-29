@@ -36,21 +36,21 @@ Route::group(['middleware' => 'auth:api'], function () {
 Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/api/search/', 'APIController@search');
 
-    Route::get('/api/user', 'UserAPIController@index');
-    Route::get('/api/user/{id}', 'UserAPIController@show');
-    Route::post('/api/user', 'UserAPIController@store');
-    Route::put('/api/user/{id}', 'UserAPIController@update');
-    Route::delete('/api/user/{id}', 'UserAPIController@destroy');
+    Route::get('/api/user', 'UserApiController@index');
+    Route::get('/api/user/{id}', 'UserApiController@show');
+    Route::post('/api/user', 'UserApiController@store');
+    Route::put('/api/user/{id}', 'UserApiController@update');
+    Route::delete('/api/user/{id}', 'UserApiController@destroy');
 
-    Route::get('/api/task', 'TaskAPIController@index');
-    Route::get('/api/task/{id}', 'TaskAPIController@show');
-    Route::post('/api/task', 'TaskAPIController@store');
-    Route::put('/api/task/{id}', 'TaskAPIController@update');
-    Route::delete('/api/task/{id}', 'TaskAPIController@destroy');
+    Route::get('/api/task', 'TaskApiController@index');
+    Route::get('/api/task/{id}', 'TaskApiController@show');
+    Route::post('/api/task', 'TaskApiController@store');
+    Route::put('/api/task/{id}', 'TaskApiController@update');
+    Route::delete('/api/task/{id}', 'TaskApiController@destroy');
 
-    Route::get('/api/comment', 'CommentAPIController@index');
-    Route::get('/api/comment/{id}', 'CommentAPIController@show');
-    Route::post('/api/comment', 'CommentAPIController@store');
-    Route::put('/api/comment/{id}', 'CommentAPIController@update');
-    Route::delete('/api/comment/{id}', 'CommentAPIController@destroy');    
+    Route::get('/api/comment', 'CommentApiController@index');
+    Route::get('/api/comment/{id}', 'CommentApiController@show');
+    Route::post('/api/comment', 'CommentApiController@store');
+    Route::put('/api/comment/{id}', 'CommentApiController@update');
+    Route::delete('/api/comment/{id}', 'CommentApiController@destroy');    
 });

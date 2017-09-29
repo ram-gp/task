@@ -16,14 +16,16 @@ class TaskRepository
 	  {
 	  	  $user =\JWTAuth::toUser($task_array['token']);
 		  if( $id != null )
-			  $task = Task::findOrFail($id);
+			{  $task = Task::findOrFail($id);
+			$task->created_by=$user->id;
+			}
 		  else
 			$task = new Task;
 		  
 		  	$task->task_type=$task_array['task_type'];
 			$task->task_desc=$task_array['task_desc'];
 			$task->task_status=$task_array['task_status'];
-			$task->created_by=$user->id;
+			
 			$task->updated_by=$user->id;
 			$task->save(); 
 		 return $task;
